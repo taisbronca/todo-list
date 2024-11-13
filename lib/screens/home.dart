@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
   List<Task> _foundTask = [];
   final TextEditingController _taskController = TextEditingController();
 
-   @override
+  @override
   void initState() {
     super.initState();
     final taskListProvider = Provider.of<TaskList>(context, listen: false);
@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final taskListProvider = Provider.of<TaskList>(context);
-    final tasksList = taskListProvider.tasks;
+    //final tasksList = taskListProvider.tasks;
 
     return Scaffold(
       backgroundColor: tdBGColor,
@@ -52,12 +52,8 @@ class _HomeState extends State<Home> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => TaskListPage(
-                                tasks: _foundTask
-                                    .where((task) => !task.isDone)
-                                    .toList(),
                                 title: 'Tarefas Pendentes',
-                                onTaskChanged: _handleTaskChange,
-                                onDeleteTask: _handleTaskDelete,
+                                filterCompleted: false,
                                 onEditTask: _openTaskEditFormModal,
                               ),
                             ),
@@ -92,12 +88,8 @@ class _HomeState extends State<Home> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => TaskListPage(
-                                tasks: _foundTask
-                                    .where((task) => task.isDone)
-                                    .toList(),
-                                title: 'Tarefas Concluídas',
-                                onTaskChanged: _handleTaskChange,
-                                onDeleteTask: _handleTaskDelete,
+                                title: "Tarefas Concluídas",
+                                filterCompleted: true,
                                 onEditTask: _openTaskEditFormModal,
                               ),
                             ),
@@ -173,17 +165,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-  // void _handleTaskAdd(String title, String description, DateTime date) {
-  //   Provider.of<TaskList>(context, listen: false).addTask(Task(
-  //     id: DateTime.now().millisecondsSinceEpoch.toString(),
-  //     title: title,
-  //     description: description,
-  //     date: date,
-  //   ));
-  //   _taskController.clear();
-  //   _updateFoundTasks();
-  // }
-
   void _openTaskEditFormModal(Task task) {
     showModalBottomSheet(
       context: context,
@@ -232,7 +213,7 @@ class _HomeState extends State<Home> {
     } else {
       results = tasksList
           .where((item) =>
-              item.title!.toLowerCase().contains(enteredKeyword.toLowerCase()))
+              item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
           .toList();
     }
 

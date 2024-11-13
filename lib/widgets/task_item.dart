@@ -54,7 +54,7 @@ class TaskItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    task.description ?? '',
+                    task.description,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
