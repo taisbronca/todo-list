@@ -10,7 +10,7 @@ class TaskListPage extends StatelessWidget {
   final bool filterCompleted;
   final Function(Task) onEditTask;
 
-  TaskListPage({
+  const TaskListPage({super.key, 
     required this.title,
     required this.filterCompleted,
     required this.onEditTask,
@@ -31,14 +31,14 @@ class TaskListPage extends StatelessWidget {
         title: Text(title),
       ),
       body: tasks.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'Nenhuma Tarefa encontrada',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             )
           : ListView.builder(
-              padding: EdgeInsets.only(top: 20, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 final task = tasks[index];

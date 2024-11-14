@@ -7,11 +7,13 @@ import 'task.dart';
 
 class TaskList with ChangeNotifier {
   final _baseUrl = 'https://todo-list-b34b2-default-rtdb.firebaseio.com/';
-  List<Task> _tasks = [];
+  final List<Task> _tasks = [];
 
   List<Task> get tasks => _tasks;
 
   Future<void> loadTasks() async {
+    _tasks.clear();
+
     final response = await http.get(Uri.parse('$_baseUrl/tasks.json'));
     Map<String, dynamic> data = jsonDecode(response.body);
     data.forEach((taskId, taskData) {
@@ -73,10 +75,18 @@ class TaskList with ChangeNotifier {
     }
   }
 
-  void toggleTaskStatus(String id) {
+  Future<void> toggleTaskStatus(String id) async {
     final index = _tasks.indexWhere((task) => task.id == id);
     if (index != -1) {
-      _tasks[index].isDone = !_tasks[index].isDone;
+      final newStatus = !_tasks[index].isDone;
+      _tasks[index].isDone = newStatus;
+
+      await http.patch(
+        Uri.parse('$_baseUrl/tasks/$id.json'),
+        body: jsonEncode({
+          "isDone": newStatus,
+        }),
+      );
       notifyListeners();
     }
   }

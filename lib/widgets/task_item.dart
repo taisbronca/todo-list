@@ -12,12 +12,12 @@ class TaskItem extends StatelessWidget {
   final Function(Task) onEditTask;
 
   const TaskItem({
-    Key? key,
+    super.key,
     required this.task,
     required this.onTaskChanged,
     required this.onDeleteTask,
     required this.onEditTask,
-  }) : super(key: key);
+  });
 
 
   @override
@@ -43,7 +43,7 @@ class TaskItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    task.title!,
+                    task.title,
                     style: TextStyle(
                       fontSize: 16,
                       color: tdBlack,
@@ -69,7 +69,7 @@ class TaskItem extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Text(
-               task.date != null ? DateFormat('dd/MM').format(task.date!) : '',
+               task.date != null ? DateFormat('dd/MM').format(task.date) : '',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey,

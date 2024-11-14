@@ -11,7 +11,7 @@ import '../widgets/task_item.dart';
 import './task_list_page.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -20,6 +20,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<Task> _foundTask = [];
   final TextEditingController _taskController = TextEditingController();
+
+  Future<void> _refreshTasks(BuildContext context) {
+    return Provider.of<TaskList>(context, listen: false).loadTasks();
+  }
 
   @override
   void initState() {
@@ -30,121 +34,130 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-     final taskList = Provider.of<TaskList>(context);
+    final taskList = Provider.of<TaskList>(context);
 
     return Scaffold(
       backgroundColor: tdBGColor,
       appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            child: Column(
-              children: [
-                searchBox(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TaskListPage(
-                                title: 'Tarefas Pendentes',
-                                filterCompleted: false,
-                                onEditTask: _openTaskEditFormModal,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          color: Colors.orangeAccent,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.pending,
-                                    color: Colors.white, size: 40),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Pendentes',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TaskListPage(
-                                title: "Tarefas Concluídas",
-                                filterCompleted: true,
-                                onEditTask: _openTaskEditFormModal,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          color: Colors.green,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.check_circle,
-                                    color: Colors.white, size: 40),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Concluídas',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 30, bottom: 20, left: 5),
-                  child: Text(
-                    'Todas as Tarefas',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Expanded(
-            child: taskList.tasks.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : ListView(
+      body: RefreshIndicator(
+        onRefresh: () => _refreshTasks(context),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: Column(
+                children: [
+                  searchBox(),
+                  Row(
                     children: [
-                      for (Task todo in taskList.tasks.reversed)
-                        TaskItem(
-                          task: todo,
-                          onTaskChanged: _handleTaskChange,
-                          onDeleteTask: _handleTaskDelete,
-                          onEditTask: _openTaskEditFormModal,
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TaskListPage(
+                                  title: 'Tarefas Pendentes',
+                                  filterCompleted: false,
+                                  onEditTask: _openTaskEditFormModal,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: Colors.orangeAccent,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(Icons.pending,
+                                      color: Colors.white, size: 40),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'Pendentes',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TaskListPage(
+                                  title: "Tarefas Concluídas",
+                                  filterCompleted: true,
+                                  onEditTask: _openTaskEditFormModal,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: Colors.green,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(Icons.check_circle,
+                                      color: Colors.white, size: 40),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'Concluídas',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                )
-              ],
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(top: 30, bottom: 20, left: 5),
+                    child: Text(
+                      'Todas as Tarefas',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  taskList.tasks.isEmpty
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: taskList.tasks.length,
+                          itemBuilder: (context, index) {
+                            final todo =
+                                taskList.tasks.reversed.toList()[index];
+                            return TaskItem(
+                              task: todo,
+                              onTaskChanged: _handleTaskChange,
+                              onDeleteTask: _handleTaskDelete,
+                              onEditTask: _openTaskEditFormModal,
+                            );
+                          },
+                        ),
+                ],
+              ),
             ),
           ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -165,24 +178,24 @@ class _HomeState extends State<Home> {
   }
 
   void _openTaskEditFormModal(Task task) {
-  showModalBottomSheet(
-    context: context,
-    builder: (_) => TaskForm(
-      initialTitle: task.title,
-      initialDescription: task.description,
-      initialDate: task.date,
-      taskId: task.id,
-      onEditTask: (title, description, date) {
-        Provider.of<TaskList>(context, listen: false).editTask(
-          task.id,
-          title,
-          description,
-          date,
-        );
-      },
-    ),
-  );
-}
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => TaskForm(
+        initialTitle: task.title,
+        initialDescription: task.description,
+        initialDate: task.date,
+        taskId: task.id,
+        onEditTask: (title, description, date) {
+          Provider.of<TaskList>(context, listen: false).editTask(
+            task.id,
+            title,
+            description,
+            date,
+          );
+        },
+      ),
+    );
+  }
 
   void _handleTaskAdd(String title, String description, DateTime date) {
     Provider.of<TaskList>(context, listen: false).addTask(Task(
@@ -251,7 +264,7 @@ class _HomeState extends State<Home> {
     return AppBar(
       backgroundColor: tdBGColor,
       elevation: 0,
-      title: Row(children: [
+      title: Row(children: const [
         Icon(
           Icons.menu,
           color: tdBlack,

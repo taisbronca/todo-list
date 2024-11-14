@@ -13,7 +13,7 @@ class TaskForm extends StatefulWidget {
   final void Function(String title, String description, DateTime date)? onEditTask;
 
 
-  TaskForm({
+  const TaskForm({super.key, 
     this.initialTitle,
     this.initialDescription,
     this.initialDate,
@@ -51,7 +51,7 @@ class _TaskFormState extends State<TaskForm> {
        _showErrorDialog('Por favor, preencha todos os campos e selecione uma data.');
     return;
     }
-    
+
     final taskListProvider = Provider.of<TaskList>(context, listen: false);
 
     if (isEditing) {
@@ -72,14 +72,14 @@ class _TaskFormState extends State<TaskForm> {
   showDialog(
     context: context,
     builder: (ctx) => AlertDialog(
-      title: Text('Erro'),
+      title: const Text('Erro'),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.of(ctx).pop();
           },
-          child: Text('OK'),
+          child: const Text('OK'),
         ),
       ],
     ),
@@ -92,7 +92,7 @@ class _TaskFormState extends State<TaskForm> {
             initialDate: DateTime.now(),
             firstDate: DateTime(2000),
             lastDate: DateTime(2100),
-            locale: Locale('pt', 'BR'))
+            locale: const Locale('pt', 'BR'))
         .then((pickedDate) {
       if (pickedDate != null) {
         setState(() {
@@ -116,13 +116,13 @@ class _TaskFormState extends State<TaskForm> {
         children: [
           TextField(
             controller: _titleController,
-            decoration: InputDecoration(labelText: 'Título'),
+            decoration: const InputDecoration(labelText: 'Título'),
           ),
           TextField(
             controller: _descriptionController,
-            decoration: InputDecoration(labelText: 'Descrição'),
+            decoration: const InputDecoration(labelText: 'Descrição'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
@@ -134,14 +134,14 @@ class _TaskFormState extends State<TaskForm> {
               ),
               TextButton(
                 onPressed: _presentDatePicker,
-                child: Text(
+                child: const Text(
                   'Selecionar Data',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _submitForm,
             child: Text(isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa'),
