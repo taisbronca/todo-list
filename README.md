@@ -2,11 +2,10 @@
 
 Este é um aplicativo de lista de tarefas desenvolvido em Flutter, permitindo que usuários criem, editem, excluam e alterem o status de suas próprias tarefas (pendente ou concluída). O aplicativo utiliza autenticação com token para garantir que apenas o usuário autenticado possa acessar e manipular suas tarefas. Inclui sincronização em tempo real das tarefas e suporte à localização pt_BR para formatação de datas.
 
-```markdown
+
 ![Tela de Login](assets/images/print01.png)
 ![Home](assets/images/print02.png)
 
-```
 
 ### Arquitetura e Design
 O aplicativo segue o padrão MVVM (Model-View-ViewModel) e faz uso do Provider para gerenciar o estado, proporcionando uma estrutura modular e fácil de manter.
