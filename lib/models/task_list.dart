@@ -1,56 +1,74 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'task.dart';
 
 class TaskList with ChangeNotifier {
-  List<Task> _tasks = [
-    Task(
-        id: '01',
-        title: 'teste titulo',
-        description: 'description',
-        date: DateTime.now(),
-        isDone: true),
-    Task(
-        id: '02',
-        title: 'eita eita',
-        description: 'descricaozona mesmo',
-        date: DateTime.now(),
-        isDone: true),
-    Task(
-        id: '03',
-        title: 'teste titulo mais um',
-        description: 'description',
-        date: DateTime.now(),
-        isDone: false),
-    Task(
-        id: '04',
-        title: 'lalalalalalala',
-        description: 'descridescriptiondescriptiondescriptiondescriptionption',
-        date: DateTime.now(),
-        isDone: false),
-  ];
+  final _baseUrl = 'https://todo-list-b34b2-default-rtdb.firebaseio.com/';
+  List<Task> _tasks = [];
 
   List<Task> get tasks => _tasks;
 
-  void addTask(Task task) {
-    _tasks.add(task);
+  Future<void> loadTasks() async {
+    final response = await http.get(Uri.parse('$_baseUrl/tasks.json'));
+    Map<String, dynamic> data = jsonDecode(response.body);
+    data.forEach((taskId, taskData) {
+      _tasks.add(Task(
+        id: taskId,
+        title: taskData['title'],
+        description: taskData['description'],
+        date: DateTime.parse(taskData['date']),
+        isDone: taskData['isDone'] ?? false,
+      ));
+    });
     notifyListeners();
   }
 
-  void deleteTask(String? id) {
+  Future<void> addTask(Task task) async {
+    final response = await http.post(Uri.parse('$_baseUrl/tasks.json'),
+        body: jsonEncode({
+          "title": task.title,
+          "description": task.description,
+          "date": task.date.toIso8601String(),
+        }));
+
+    final id = jsonDecode(response.body)['name'];
+
+    _tasks.add(Task(
+        id: id,
+        title: task.title,
+        description: task.description,
+        date: task.date,
+        isDone: task.isDone));
+    notifyListeners();
+  }
+
+  Future<void> deleteTask(String? id) async {
+    await http.delete(Uri.parse('$_baseUrl/tasks/$id.json'));
     _tasks.removeWhere((task) => task.id == id);
     notifyListeners();
   }
 
-  void editTask(String id, String title, String description, DateTime date) {
-    final index = _tasks.indexWhere((task) => task.id == id);
-    if (index != -1) {
-      _tasks[index] = Task(
+  Future<void> editTask(
+      String id, String title, String description, DateTime date) async {
+    final taskIndex = _tasks.indexWhere((task) => task.id == id);
+    if (taskIndex != -1) {
+      await http.patch(
+        Uri.parse('$_baseUrl/tasks/$id.json'),
+        body: jsonEncode({
+          "title": title,
+          "description": description,
+          "date": date.toIso8601String(),
+        }),
+      );
+      _tasks[taskIndex] = Task(
           id: id,
           title: title,
           description: description,
           date: date,
-          isDone: _tasks[index].isDone);
+          isDone: _tasks[taskIndex].isDone);
       notifyListeners();
     }
   }

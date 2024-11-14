@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../models/task.dart';
+import '../models/task_list.dart';
 
 class TaskForm extends StatefulWidget {
-  final Function(String title, String description, DateTime date)? onAddTask;
-  final Function(String title, String description, DateTime date)? onEditTask;
   final String? initialTitle;
   final String? initialDescription;
   final DateTime? initialDate;
+  final String? taskId;
+   final void Function(String title, String description, DateTime date)? onAddTask;
+  final void Function(String title, String description, DateTime date)? onEditTask;
+
 
   TaskForm({
-    this.onAddTask,
-    this.onEditTask,
     this.initialTitle,
     this.initialDescription,
     this.initialDate,
+    this.taskId,
+    this.onAddTask,
+    this.onEditTask,
   });
 
   @override
@@ -30,9 +36,10 @@ class _TaskFormState extends State<TaskForm> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.initialTitle);
-    _descriptionController = TextEditingController(text: widget.initialDescription);
+    _descriptionController =
+        TextEditingController(text: widget.initialDescription);
     _selectedDate = widget.initialDate;
-    isEditing = widget.initialTitle != null || widget.initialDescription != null || widget.initialDate != null;
+    isEditing = widget.taskId != null;
   }
 
   void _submitForm() {
@@ -41,16 +48,43 @@ class _TaskFormState extends State<TaskForm> {
     final date = _selectedDate;
 
     if (title.isEmpty || description.isEmpty || date == null) {
-      return;
+       _showErrorDialog('Por favor, preencha todos os campos e selecione uma data.');
+    return;
     }
+    
+    final taskListProvider = Provider.of<TaskList>(context, listen: false);
 
-    if (isEditing && widget.onEditTask != null) {
-      widget.onEditTask!(title, description, date);
+    if (isEditing) {
+       taskListProvider.editTask(widget.taskId!, title, description, date);
     } else {
-      widget.onAddTask!(title, description, date);
+      final newTask = Task(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          title: title,
+          description: description,
+          date: date
+          );
+          taskListProvider.addTask(newTask);
     }
     Navigator.of(context).pop();
   }
+
+  void _showErrorDialog(String message) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text('Erro'),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(ctx).pop();
+          },
+          child: Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
 
   void _presentDatePicker() {
     showDatePicker(
@@ -110,7 +144,7 @@ class _TaskFormState extends State<TaskForm> {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: _submitForm,
-             child: Text(isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa'),
+            child: Text(isEditing ? 'Editar Tarefa' : 'Adicionar Tarefa'),
           ),
         ],
       ),

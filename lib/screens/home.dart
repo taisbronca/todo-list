@@ -24,14 +24,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    final taskListProvider = Provider.of<TaskList>(context, listen: false);
-    _foundTask = taskListProvider.tasks;
+    //_foundTask = Provider.of<TaskList>(context, listen: false).tasks;
+    Provider.of<TaskList>(context, listen: false).loadTasks();
   }
 
   @override
   Widget build(BuildContext context) {
-    final taskListProvider = Provider.of<TaskList>(context);
-    //final tasksList = taskListProvider.tasks;
+     final taskList = Provider.of<TaskList>(context);
 
     return Scaffold(
       backgroundColor: tdBGColor,
@@ -128,9 +127,11 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 Expanded(
-                  child: ListView(
+            child: taskList.tasks.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView(
                     children: [
-                      for (Task todo in _foundTask.reversed)
+                      for (Task todo in taskList.tasks.reversed)
                         TaskItem(
                           task: todo,
                           onTaskChanged: _handleTaskChange,
@@ -159,28 +160,29 @@ class _HomeState extends State<Home> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (BuildContext context) {
-        return TaskForm(onAddTask: _handleTaskAdd);
-      },
+      builder: (_) => TaskForm(onAddTask: _handleTaskAdd),
     );
   }
 
   void _openTaskEditFormModal(Task task) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return TaskForm(
-          initialTitle: task.title,
-          initialDescription: task.description,
-          initialDate: task.date,
-          onEditTask: (String title, String description, DateTime date) {
-            _handleTaskEdit(task.id, title, description, date);
-          },
+  showModalBottomSheet(
+    context: context,
+    builder: (_) => TaskForm(
+      initialTitle: task.title,
+      initialDescription: task.description,
+      initialDate: task.date,
+      taskId: task.id,
+      onEditTask: (title, description, date) {
+        Provider.of<TaskList>(context, listen: false).editTask(
+          task.id,
+          title,
+          description,
+          date,
         );
       },
-    );
-  }
+    ),
+  );
+}
 
   void _handleTaskAdd(String title, String description, DateTime date) {
     Provider.of<TaskList>(context, listen: false).addTask(Task(
@@ -206,16 +208,13 @@ class _HomeState extends State<Home> {
   }
 
   void _handleFilter(String enteredKeyword) {
-    List<Task> results = [];
     final tasksList = Provider.of<TaskList>(context, listen: false).tasks;
-    if (enteredKeyword.isEmpty) {
-      results = tasksList;
-    } else {
-      results = tasksList
-          .where((item) =>
-              item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
+    List<Task> results = enteredKeyword.isEmpty
+        ? tasksList
+        : tasksList
+            .where((item) =>
+                item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+            .toList();
 
     setState(() {
       _foundTask = results;
