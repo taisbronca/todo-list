@@ -3,7 +3,8 @@
 Este é um aplicativo de lista de tarefas desenvolvido em Flutter, permitindo que usuários criem, editem, excluam e alterem o status de suas próprias tarefas (pendente ou concluída). O aplicativo utiliza autenticação com token para garantir que apenas o usuário autenticado possa acessar e manipular suas tarefas. Inclui sincronização em tempo real das tarefas e suporte à localização pt_BR para formatação de datas.
 
 
-![Tela de Login](assets/print01.png)
+ <img src="assets/print01.png" width="200" height="300" />
+
 ![Home](assets/print02.png)
 
 
