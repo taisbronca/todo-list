@@ -104,4 +104,14 @@ class TaskList with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  List<Task> filterTasks(String keyword) {
+    if (keyword.isEmpty) {
+      return _tasks;
+    } else {
+      return _tasks.where((task) {
+        return task.title.toLowerCase().contains(keyword.toLowerCase());
+      }).toList();
+    }
+  }
 }

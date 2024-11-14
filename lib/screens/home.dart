@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    //_foundTask = Provider.of<TaskList>(context, listen: false).tasks;
     Provider.of<TaskList>(context, listen: false).loadTasks();
   }
 
@@ -222,16 +221,15 @@ class _HomeState extends State<Home> {
 
   void _handleFilter(String enteredKeyword) {
     final tasksList = Provider.of<TaskList>(context, listen: false).tasks;
-    List<Task> results = enteredKeyword.isEmpty
+    List<Task> filteredTasks = enteredKeyword.isEmpty
         ? tasksList
         : tasksList
-            .where((item) =>
-                item.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+            .where(
+              (item) => item.title.toLowerCase().contains(
+                    enteredKeyword.toLowerCase(),
+                  ),
+            )
             .toList();
-
-    setState(() {
-      _foundTask = results;
-    });
   }
 
   Widget searchBox() {
