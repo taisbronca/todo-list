@@ -9,21 +9,27 @@ Este é um aplicativo de lista de tarefas desenvolvido em Flutter, permitindo qu
 
 
 ### Arquitetura e Design
-O aplicativo segue o padrão MVVM (Model-View-ViewModel) e faz uso do Provider para gerenciar o estado, proporcionando uma estrutura modular e fácil de manter.
 
-- Autenticação com Firebase: Usamos o Firebase Authentication para gerenciar usuários de forma segura.
-- Banco de Dados Firebase Realtime Database: Armazenamento das tarefas dos usuários, oferecendo persistência de dados e atualização em tempo real.
-- Gerenciamento de Estado com Provider: Gerencia o estado da lista de tarefas e fornece uma experiência de sincronização em tempo real.
-- Componentização: Interface dividida em componentes reutilizáveis, como TaskItem, TaskForm e TaskListPage, para facilitar a manutenção.
-- Navegação: A navegação entre telas (Home, TaskListPage) é feita usando Navigator, com uma experiência de usuário fluida.
+- Arquitetura: Utilizei o padrão MVVM (Model-View-ViewModel) para separar responsabilidades e manter o código organizado.
+- Gerenciamento de Estado: Escolhi o Provider por sua simplicidade e integração nativa ao Flutter. Ele permitiu gerenciar operações como adicionar, editar, deletar e sincronizar tarefas em tempo real.
+- Backend: Usei o Firebase Realtime Database para sincronização em tempo real, em vez do Firestore, para simplificar a implementação. A principal diferença é que o Realtime Database é baseado em dados hierárquicos, enquanto o Firestore trabalha com documentos e coleções (mais estruturado e escalável para grandes aplicações).
+
+### Do Aplicativo
+
+- Autenticação de Usuário: Implementação de login, cadastro e recuperação de senha usando o Firebase Authentication.
+- Gerenciamento de Tarefas: Tarefas podem ser criadas, editadas, excluídas e marcadas como concluídas ou pendentes. Separação clara entre tarefas pendentes e concluídas na interface.
+- Sincronização em Tempo Real: Alterações feitas em qualquer dispositivo são refletidas em tempo real usando o Firebase Realtime Database.
+- Interface do Usuário: A interface segue o Material Design para garantir uma experiência intuitiva e adaptável a diferentes tamanhos de tela.
+
 
 ### Melhorias Futuras
 - Renovação Automática de Sessão: Implementar renovação automática de token no Firebase.
 - Notificações Push: Enviar notificações para tarefas com prazo.
 - Suporte Offline com Sincronização: Usar armazenamento local para acesso offline e sincronização posterior.
 - Filtros Avançados e Ordenação: Adicionar filtros de prioridade, prazos, e ordenação de tarefas.
-- Testes Automatizados: Adicionar cobertura de testes para validação e qualidade do código.
-- Gerenciamento de Estado: MobX.
+- Adicionar testes unitários e de widget para aumentar a robustez.
+- Implementar o MobX para gerenciamento de estado.
+- Migrar para o Firestore para melhorar a estrutura e escalabilidade dos dados.
 
 ### Requisitos
 - Flutter SDK: Versão 3.x ou superior

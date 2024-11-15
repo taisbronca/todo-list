@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/exceptions/auth_exception.dart';
@@ -68,11 +70,26 @@ class _AuthFormState extends State<AuthForm> {
         await auth.login(_authData['email']!, _authData['password']!);
       } else {
         await auth.signup(_authData['email']!, _authData['password']!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Usuário cadastrado com sucesso!',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+        setState(() {
+          _authMode = AuthMode.Login;
+        });
       }
     } on AuthException catch (error) {
       _showErrorDialog(error.toString());
     } catch (error) {
       _showErrorDialog('Ocorreu um erro inesperado!');
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 

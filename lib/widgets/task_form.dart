@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -9,11 +11,13 @@ class TaskForm extends StatefulWidget {
   final String? initialDescription;
   final DateTime? initialDate;
   final String? taskId;
-   final void Function(String title, String description, DateTime date)? onAddTask;
-  final void Function(String title, String description, DateTime date)? onEditTask;
+  final void Function(String title, String description, DateTime date)?
+      onAddTask;
+  final void Function(String title, String description, DateTime date)?
+      onEditTask;
 
-
-  const TaskForm({super.key, 
+  const TaskForm({
+    super.key,
     this.initialTitle,
     this.initialDescription,
     this.initialDate,
@@ -48,43 +52,58 @@ class _TaskFormState extends State<TaskForm> {
     final date = _selectedDate;
 
     if (title.isEmpty || description.isEmpty || date == null) {
-       _showErrorDialog('Por favor, preencha todos os campos e selecione uma data.');
-    return;
+      _showErrorDialog(
+          'Por favor, preencha todos os campos e selecione uma data.');
+      return;
     }
 
     final taskListProvider = Provider.of<TaskList>(context, listen: false);
 
     if (isEditing) {
-       taskListProvider.editTask(widget.taskId!, title, description, date);
+      taskListProvider.editTask(widget.taskId!, title, description, date);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tarefa editada com sucesso!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
     } else {
       final newTask = Task(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: title,
-          description: description,
-          date: date
-          );
-          taskListProvider.addTask(newTask);
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: title,
+        description: description,
+        date: date,
+      );
+      taskListProvider.addTask(newTask);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tarefa adicionada com sucesso!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
     Navigator.of(context).pop();
   }
 
   void _showErrorDialog(String message) {
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Erro'),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(ctx).pop();
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    ),
-  );
-}
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Erro'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _presentDatePicker() {
     showDatePicker(

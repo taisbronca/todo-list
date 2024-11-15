@@ -18,7 +18,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Task> _foundTask = [];
   final TextEditingController _taskController = TextEditingController();
 
   Future<void> _refreshTasks(BuildContext context) {
@@ -220,16 +219,7 @@ class _HomeState extends State<Home> {
   }
 
   void _handleFilter(String enteredKeyword) {
-    final tasksList = Provider.of<TaskList>(context, listen: false).tasks;
-    List<Task> filteredTasks = enteredKeyword.isEmpty
-        ? tasksList
-        : tasksList
-            .where(
-              (item) => item.title.toLowerCase().contains(
-                    enteredKeyword.toLowerCase(),
-                  ),
-            )
-            .toList();
+    Provider.of<TaskList>(context, listen: false).filterTasks(enteredKeyword);
   }
 
   Widget searchBox() {
@@ -239,7 +229,7 @@ class _HomeState extends State<Home> {
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextField(
-        onChanged: (value) => _handleFilter(value),
+        onChanged: _handleFilter,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             prefixIcon: Icon(

@@ -9,13 +9,17 @@ class TaskList with ChangeNotifier {
   final _baseUrl = 'https://todo-list-b34b2-default-rtdb.firebaseio.com/';
   String _token;
   List<Task> _tasks = [];
+  List<Task> _filteredTasks = [];
 
-  List<Task> get tasks => _tasks;
+  List<Task> get tasks => _filteredTasks.isEmpty ? _tasks : _filteredTasks;
 
-  TaskList(this._token, this._tasks);
+  TaskList(this._token, this._tasks) {
+    _filteredTasks = [..._tasks];
+  }
 
   Future<void> loadTasks() async {
     _tasks.clear();
+    _filteredTasks.clear();
 
     final response = await http.get(
       Uri.parse('$_baseUrl/tasks.json?auth=$_token'),
@@ -31,6 +35,8 @@ class TaskList with ChangeNotifier {
         isDone: taskData['isDone'] ?? false,
       ));
     });
+
+    _filteredTasks = [..._tasks];
     notifyListeners();
   }
 
@@ -45,18 +51,22 @@ class TaskList with ChangeNotifier {
 
     final id = jsonDecode(response.body)['name'];
 
-    _tasks.add(Task(
-        id: id,
-        title: task.title,
-        description: task.description,
-        date: task.date,
-        isDone: task.isDone));
+    _tasks.add(
+      Task(
+          id: id,
+          title: task.title,
+          description: task.description,
+          date: task.date,
+          isDone: task.isDone),
+    );
+    _filteredTasks = [..._tasks];
     notifyListeners();
   }
 
   Future<void> deleteTask(String? id) async {
     await http.delete(Uri.parse('$_baseUrl/tasks/$id.json?auth=$_token'));
     _tasks.removeWhere((task) => task.id == id);
+    _filteredTasks = [..._tasks];
     notifyListeners();
   }
 
@@ -73,11 +83,13 @@ class TaskList with ChangeNotifier {
         }),
       );
       _tasks[taskIndex] = Task(
-          id: id,
-          title: title,
-          description: description,
-          date: date,
-          isDone: _tasks[taskIndex].isDone);
+        id: id,
+        title: title,
+        description: description,
+        date: date,
+        isDone: _tasks[taskIndex].isDone,
+      );
+      _filteredTasks = [..._tasks];
       notifyListeners();
     }
   }
@@ -100,18 +112,19 @@ class TaskList with ChangeNotifier {
           'isDone': isDone,
         }),
       );
-
+      _filteredTasks = [..._tasks];
       notifyListeners();
     }
   }
 
-  List<Task> filterTasks(String keyword) {
+  void filterTasks(String keyword) {
     if (keyword.isEmpty) {
-      return _tasks;
+      _filteredTasks = [..._tasks];
     } else {
-      return _tasks.where((task) {
+      _filteredTasks = _tasks.where((task) {
         return task.title.toLowerCase().contains(keyword.toLowerCase());
       }).toList();
     }
+    notifyListeners();
   }
 }
