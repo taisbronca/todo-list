@@ -1,6 +1,6 @@
 # todo-list
 
-Este é um aplicativo de lista de tarefas desenvolvido em Flutter, permitindo que usuários criem, editem, excluam e alterem o status de suas próprias tarefas (pendente ou concluída). O aplicativo utiliza autenticação com token para garantir que apenas o usuário autenticado possa acessar e manipular suas tarefas. Inclui sincronização em tempo real das tarefas e suporte à localização pt_BR para formatação de datas.
+This is a task list app built with Flutter, allowing users to create, edit, delete, and update the status of their tasks (pending or completed). The app uses token-based authentication to ensure only authenticated users can access and manage their tasks. It features real-time task synchronization and pt_BR localization support for date formatting.
 
 <div style="display: flex; justify-content: space-between;">
   <img src="assets/print01.png" width="400" height="800" />
@@ -8,33 +8,34 @@ Este é um aplicativo de lista de tarefas desenvolvido em Flutter, permitindo qu
 </div>
 
 
-### Arquitetura e Design
+### Architecture and Design
 
-- Arquitetura: Utilizei o padrão MVVM (Model-View-ViewModel) para separar responsabilidades e manter o código organizado.
-- Gerenciamento de Estado: Escolhi o Provider por sua simplicidade e integração nativa ao Flutter. Ele permitiu gerenciar operações como adicionar, editar, deletar e sincronizar tarefas em tempo real.
-- Backend: Usei o Firebase Realtime Database para sincronização em tempo real, em vez do Firestore, para simplificar a implementação. A principal diferença é que o Realtime Database é baseado em dados hierárquicos, enquanto o Firestore trabalha com documentos e coleções (mais estruturado e escalável para grandes aplicações).
+- Architecture: Implemented the MVVM (Model-View-ViewModel) pattern to separate concerns and maintain organized code.
+- State Management: Used Provider for its simplicity and native integration with Flutter, enabling operations like adding, editing, deleting, and real-time task synchronization.
+- Backend: Leveraged Firebase Realtime Database for real-time synchronization instead of Firestore to simplify implementation. Unlike Firestore, which uses a document-collection structure for scalability, Realtime Database is based on hierarchical data.
 
-### Do Aplicativo
+### DAbout the App
 
-- Autenticação de Usuário: Implementação de login, cadastro e recuperação de senha usando o Firebase Authentication.
-- Gerenciamento de Tarefas: Tarefas podem ser criadas, editadas, excluídas e marcadas como concluídas ou pendentes. Separação clara entre tarefas pendentes e concluídas na interface.
-- Sincronização em Tempo Real: Alterações feitas em qualquer dispositivo são refletidas em tempo real usando o Firebase Realtime Database.
-- Interface do Usuário: A interface segue o Material Design para garantir uma experiência intuitiva e adaptável a diferentes tamanhos de tela.
+- User Authentication: Includes login, registration, and password recovery using Firebase Authentication.
+- Task Management: Tasks can be created, edited, deleted, and marked as completed or pending, with a clear separation between pending and completed tasks in the interface.
+- Real-Time Synchronization: Changes made on any device are instantly reflected using Firebase Realtime Database.
+- User Interface: The UI follows Material Design principles to ensure an intuitive experience and adaptability across different screen sizes.
 
+### Future Improvements
 
-### Melhorias Futuras
-- Renovação Automática de Sessão: Implementar renovação automática de token no Firebase.
-- Notificações Push: Enviar notificações para tarefas com prazo.
-- Suporte Offline com Sincronização: Usar armazenamento local para acesso offline e sincronização posterior.
-- Filtros Avançados e Ordenação: Adicionar filtros de prioridade, prazos, e ordenação de tarefas.
-- Adicionar testes unitários e de widget para aumentar a robustez.
-- Implementar o MobX para gerenciamento de estado.
-- Migrar para o Firestore para melhorar a estrutura e escalabilidade dos dados.
+- Automatic Session Renewal: Implement automatic token renewal with Firebase.
+- Push Notifications: Send reminders for tasks with deadlines.
+- Offline Support with Sync: Implement local storage for offline access and later synchronization.
+- Advanced Filters and Sorting: Add filters for priority, deadlines, and task sorting options.
+- Unit and Widget Testing: Introduce unit and widget tests to enhance robustness.
+- State Management with MobX: Transition to MobX for state management.
+- Migration to Firestore: Upgrade to Firestore for better data structure and scalability.
 
-### Requisitos
-- Flutter SDK: Versão 3.x ou superior
-- Dart: Versão 2.17 ou superior
-- Dependências do Projeto: Listadas no pubspec.yaml
+### Requirements
+
+- Flutter SDK: Version 3.x or higher
+- Dart: Version 2.17 or higher
+- Project Dependencies: Listed in pubspec.yaml
 
 ### Instruções de Configuração e Execução
 1. Clone o Repositório:
